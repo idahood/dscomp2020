@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+mkdir ./models
 mkdir ./data
 mkdir ./data/train
 mkdir ./data/test
