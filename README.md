@@ -12,7 +12,7 @@ Make sure you're using tensorflow2! If you see a bunch of warnings about various
 
     git clone https://github.com/idahood/dscomp2020.git
     ./init.sh
-    ./my_model --batch 128 --epoch 128 --split 0.15
+    ./my_model.py --batch 128 --epoch 128 --split 0.15
     ./grading.py models/model-$ID
 
 ## Improvement Ideas
