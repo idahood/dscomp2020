@@ -102,10 +102,10 @@ def main():
 
         worth = check(evaluated[1], evaluated[4], evaluated[5])
 
-        result.append(f'{i}, {worth}\n')
+        result.append(worth)
 
-    with open('./output.csv', 'w') as fh:
-        fh.writelines(result)
+    output = np.asarray(result)
+    np.save('./output.npy', output)
 
     end = time.perf_counter()
     print(end-start)
