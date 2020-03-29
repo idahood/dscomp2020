@@ -15,11 +15,8 @@ def main():
     parser.add_argument('--epoch', type=int, default=128, help='Number of epochs to train (default=128)')
     parser.add_argument('--split', type=int, default=0.15, help='Training validation split (default=0.15)')
     args = parser.parse_args()
-    x_train = np.load('./data/train/Competition_Train_data_8000.npy')
-    y_train = np.load('./data/train/Competition_Train_label_8000.npy')
-
-    assert(x_train.shape == (8000, 64, 64))
-    assert(y_train.shape == (8000,))
+    x_train = np.load('./data/train/new_x_train.npy')
+    y_train = np.load('./data/train/new_y_train.npy')
 
     img_rows = 64
     img_cols = 64
@@ -71,6 +68,6 @@ def main():
               verbose=1,
               validation_split=args.split)
 
-    model.save(f'models/model-{datetime.datetime.now().strftime("%Y-%m-%d@%H:%M:%S")}')
+    model.save(f'models/model-b{batch}-e{epoch}-s{split}-{datetime.datetime.now().strftime("%Y-%m-%d@%H:%M:%S")}')
 
 main()
