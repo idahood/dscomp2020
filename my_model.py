@@ -68,6 +68,6 @@ def main():
               verbose=1,
               validation_split=args.split)
 
-    model.save(f'models/model-b{batch}-e{epoch}-s{split}-{datetime.datetime.now().strftime("%Y-%m-%d@%H:%M:%S")}')
+    model.save(f'models/model-b{args.batch}-e{args.epoch}-s{args.split}-{datetime.datetime.now().strftime("%Y-%m-%d@%H:%M:%S")}')
 
 main()
