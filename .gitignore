@@ -1,0 +1,5 @@
+models/
+sync.sh
+.ipynb_checkpoints/
+data/
+output.npy

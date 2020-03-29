@@ -63,13 +63,13 @@ def main():
                   optimizer=keras.optimizers.Adam(),
                   metrics=['accuracy'])
 
-    # Enable shuffle=True?
+    # Enable shuffle=True? No
     model.fit(x_train, y_train,
               batch_size=batch_size,
               epochs=epochs,
               verbose=1,
               validation_split=0.1)
 
-    model.save(f'model-{datetime.datetime.now().strftime("%Y-%m-%d@%H:%M:%S")}')
+    model.save(f'models/model-{datetime.datetime.now().strftime("%Y-%m-%d@%H:%M:%S")}')
 
 main()
