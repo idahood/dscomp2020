@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 mkdir ./data
 mkdir ./data/train
 mkdir ./data/test
