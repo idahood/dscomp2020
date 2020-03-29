@@ -58,9 +58,9 @@ def main():
     model.add(Dropout(0.5))
     model.add(Dense(num_classes, activation='softmax'))
 
-    # Try Adam as optimizer
+    # Try Adam as optimizer. Seemed worse.
     model.compile(loss=keras.losses.categorical_crossentropy,
-                  optimizer=keras.optimizers.Adam(),
+                  optimizer=keras.optimizers.Adadelta(),
                   metrics=['accuracy'])
 
     # Enable shuffle=True? No
@@ -68,7 +68,7 @@ def main():
               batch_size=batch_size,
               epochs=epochs,
               verbose=1,
-              validation_split=0.1)
+              validation_split=0.2)
 
     model.save(f'models/model-{datetime.datetime.now().strftime("%Y-%m-%d@%H:%M:%S")}')
 
