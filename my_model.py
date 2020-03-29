@@ -65,7 +65,6 @@ def main():
               batch_size=batch_size,
               epochs=epochs,
               verbose=1,
-              shuffle=True,
               validation_split=0.1)
 
     model.save(f'model-{datetime.datetime.now().strftime("%Y-%m-%d@%H:%M:%S")}')
