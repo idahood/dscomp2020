@@ -9,3 +9,11 @@ But hey 20 points of extra credit
     source activate tensorflow2_p36
 
 Make sure you're using tensorflow2! If you see a bunch of warnings about various methods it's likely you sourced the wrong environment.
+
+    git clone https://github.com/idahood/dscomp2020.git
+    ./init.sh
+
+## Improvement Ideas
+
+Augment training data with lateral shift deformation?
+Add class for empty?

@@ -11,8 +11,9 @@ import numpy as np
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--batch', type=int, default=32, help='The batch size (default=32)')
+    parser.add_argument('--batch', type=int, default=128, help='The batch size (default=128)')
     parser.add_argument('--epoch', type=int, default=128, help='Number of epochs to train (default=128)')
+    parser.add_argument('--split', type=int, default=0.15, help='Training validation split (default=0.15)')
     args = parser.parse_args()
     x_train = np.load('./data/train/Competition_Train_data_8000.npy')
     y_train = np.load('./data/train/Competition_Train_label_8000.npy')
@@ -68,7 +69,7 @@ def main():
               batch_size=batch_size,
               epochs=epochs,
               verbose=1,
-              validation_split=0.2)
+              validation_split=args.split)
 
     model.save(f'models/model-{datetime.datetime.now().strftime("%Y-%m-%d@%H:%M:%S")}')
 
