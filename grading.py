@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+import cv2
 import time
 import numpy as np
 
@@ -68,6 +69,7 @@ def check(e1, e4, e5):
     else:
         return 0
 
+
 def main():
     '''
     Intergral is always of shape 384x64
@@ -94,13 +96,18 @@ def main():
     result = []
 
     for i, equation in enumerate(x_test):
-        characters = np.array_split(equation, CHARACTERS, axis=1)
+        #characters = np.array_split(equation, CHARACTERS, axis=1)
+        characters = []
+        characters.append(equation[:,60:130])
+        characters.append(equation[:,250:322])
+        characters.append(equation[:,315:384])
         evaluated = []
         for char in characters:
-            pred = model.predict(char.reshape(1, 64, 64, 1))
+            img = cv2.resize(char, (64,64))
+            pred = model.predict(img.reshape(1, 64, 64, 1))
             evaluated.append(np.argmax(pred))
 
-        worth = check(evaluated[1], evaluated[4], evaluated[5])
+        worth = check(evaluated[0], evaluated[1], evaluated[2])
 
         result.append(worth)
 
