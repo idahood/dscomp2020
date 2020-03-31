@@ -49,8 +49,8 @@ def main():
             zca_whitening=False,  # apply ZCA whitening
             rotation_range=10,  # randomly rotate images in the range (degrees, 0 to 180)
             zoom_range = 0.1, # Randomly zoom image
-            width_shift_range=0.2,  # randomly shift images horizontally (fraction of total width)
-            height_shift_range=0.2,  # randomly shift images vertically (fraction of total height)
+            width_shift_range=0.1,  # randomly shift images horizontally (fraction of total width)
+            height_shift_range=0.1,  # randomly shift images vertically (fraction of total height)
             horizontal_flip=False,  # randomly flip images
             vertical_flip=False)  # randomly flip images
 
