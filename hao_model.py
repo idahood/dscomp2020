@@ -1,22 +1,18 @@
 #!/usr/bin/env python3
 
 import argparse
+import cv2
 import datetime
+import numpy as np
 from sklearn.model_selection import train_test_split
-import keras
-from keras.layers import Dense, Conv2D, BatchNormalization, Activation
-from keras.layers import AveragePooling2D, Input, Flatten
 from keras.callbacks import ReduceLROnPlateau
 from keras.preprocessing.image import ImageDataGenerator
-from keras import backend as K
-import numpy as np
-
-import cv2
-from keras.utils.np_utils import to_categorical # convert to one-hot-encoding
+from keras.utils.np_utils import to_categorical
 from keras.models import Sequential
-from keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPool2D, MaxPooling2D,BatchNormalization
+from keras.layers import Dense, Dropout, Flatten, Conv2D
 from keras.optimizers import RMSprop
 from keras.preprocessing.image import ImageDataGenerator
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--batch', type=int, default=64, help='The batch size (default=64)')
@@ -27,23 +23,23 @@ def main():
     Train_label = np.load('./data/train/Competition_Train_label_8000.npy')
 
 
-
     x_train, x_test, y_train, y_test = train_test_split(Train_data,
                                                         Train_label,
                                                         test_size=args.split)
 
+    # Channels last
     x_train = np.reshape(x_train, [x_train.shape[0], x_train.shape[1], x_train.shape[2], 1])
     x_test = np.reshape(x_test, [x_test.shape[0], x_test.shape[1], x_test.shape[2], 1])
 
     x = np.reshape(Train_data, [Train_data.shape[0], Train_data.shape[1], Train_data.shape[2], 1])
 
-    print('Training set: {} and Training Targets: {}'.format(x_train.shape, y_train.shape))
-    print('Test set: {} and test targets: {}'.format(x_test.shape, y_test.shape))
+    print(f'Training set: {x_train.shape} and Training Targets: {y_train.shape}')
+    print(f'Test set: {x_test.shape} and test targets: {y_test.shape}')
 
     ## Generate one-hot-vector labels
-    y_train_onehot = keras.utils.to_categorical(y_train)
-    y_test_onehot = keras.utils.to_categorical(y_test)
-    y_onehot = keras.utils.to_categorical(Train_label)
+    y_train_onehot = to_categorical(y_train)
+    y_test_onehot = to_categorical(y_test)
+    y_onehot = to_categorical(Train_label)
 
     datagen = ImageDataGenerator(
             featurewise_center=False,  # set input mean to 0 over the dataset
@@ -51,10 +47,10 @@ def main():
             featurewise_std_normalization=False,  # divide inputs by std of the dataset
             samplewise_std_normalization=False,  # divide each input by its std
             zca_whitening=False,  # apply ZCA whitening
-            rotation_range=10,  # randomly rotate images in the range (degrees, 0 to 180)
-            zoom_range = 0.1, # Randomly zoom image
-            width_shift_range=0.1,  # randomly shift images horizontally (fraction of total width)
-            height_shift_range=0.1,  # randomly shift images vertically (fraction of total height)
+            rotation_range=15,  # randomly rotate images in the range (degrees, 0 to 180)
+            zoom_range = 0.25, # Randomly zoom image
+            width_shift_range=0.25,  # randomly shift images horizontally (fraction of total width)
+            height_shift_range=0.25,  # randomly shift images vertically (fraction of total height)
             horizontal_flip=False,  # randomly flip images
             vertical_flip=False)  # randomly flip images
 
@@ -78,7 +74,7 @@ def main():
 
     learning_rate_reduction = ReduceLROnPlateau(monitor='val_accuracy',
                                                 patience=3,
-                                                verbose=0,
+                                                verbose=1,
                                                 factor=0.5,
                                                 min_lr=0.00001)
 
