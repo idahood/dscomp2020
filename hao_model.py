@@ -6,23 +6,17 @@ from sklearn.model_selection import train_test_split
 import keras
 from keras.layers import Dense, Conv2D, BatchNormalization, Activation
 from keras.layers import AveragePooling2D, Input, Flatten
-from keras.optimizers import Adam
-from keras.callbacks import ModelCheckpoint, LearningRateScheduler
 from keras.callbacks import ReduceLROnPlateau
 from keras.preprocessing.image import ImageDataGenerator
 from keras import backend as K
-from keras.models import Model
 import numpy as np
 
 import cv2
-import itertools
 from keras.utils.np_utils import to_categorical # convert to one-hot-encoding
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPool2D, MaxPooling2D,BatchNormalization
 from keras.optimizers import RMSprop
 from keras.preprocessing.image import ImageDataGenerator
-from keras.callbacks import ReduceLROnPlateau,ModelCheckpoint
-
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--batch', type=int, default=64, help='The batch size (default=64)')
@@ -82,7 +76,7 @@ def main():
 
     model.compile(optimizer = optimizer , loss = "categorical_crossentropy", metrics=["accuracy"])
 
-    learning_rate_reduction = ReduceLROnPlateau(monitor='val_acc',
+    learning_rate_reduction = ReduceLROnPlateau(monitor='val_accuracy',
                                                 patience=3,
                                                 verbose=0,
                                                 factor=0.5,
