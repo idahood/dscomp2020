@@ -8,6 +8,7 @@ from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Conv2D, MaxPooling2D
+from keras.layers import BatchNormalization
 from keras import backend as K
 import numpy as np
 
@@ -38,7 +39,19 @@ def main():
         input_shape = (img_rows, img_cols, 1)
 
     '''
-    And we're stealing from https://keras.io/examples/mnist_cnn/
+    Started from:
+    https://keras.io/examples/mnist_cnn/
+    Removing the below made a huge improvement:
+    x_train = x_train.astype('float32')
+    x_test = x_test.astype('float32')
+    x_train /= 255
+    x_test /= 255
+
+    Additional tweaks inspired from:
+    https://machinelearningmastery.com/how-to-develop-a-convolutional-neural-network-from-scratch-for-mnist-handwritten-digit-classification/
+
+    We bought a zoo!:
+    https://www.asimovinstitute.org/neural-network-zoo/
     '''
     print('x_train shape:', x_train.shape)
     print(x_train.shape[0], 'train samples')
@@ -67,11 +80,14 @@ def main():
                      activation='relu',
                      padding='Same',
                      input_shape=input_shape))
+    model.add(BatchNormalization())
     model.add(Conv2D(64, (7, 7), activation='relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
+    model.add(BatchNormalization())
     model.add(Dropout(0.25))
     model.add(Flatten())
-    model.add(Dense(128, activation='relu'))
+    model.add(Dense(1024, activation='relu'))
+    model.add(BatchNormalization())
     model.add(Dropout(0.5))
     model.add(Dense(num_classes, activation='softmax'))
 
