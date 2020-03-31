@@ -3,11 +3,13 @@
 import argparse
 import cv2
 import time
+import tqdm
 import numpy as np
 
 from keras.models import load_model
 
 def check(e1, e4, e5):
+    # Welcome to switch case hell
     # Worth 10 points
     if (e1==0 and e4==7 and e5==11):
         return 10
@@ -88,19 +90,17 @@ def main():
 
     start = time.perf_counter()
 
-    CHARACTERS = 6
     x_test = np.load('./data/test/Competition_Problems.npy')
     model = load_model(args.path)
     model.summary()
 
     result = []
 
-    for i, equation in enumerate(x_test):
-        #characters = np.array_split(equation, CHARACTERS, axis=1)
+    for equation in tqdm.tqdm(x_test):
         characters = []
-        characters.append(equation[:,60:130])
-        characters.append(equation[:,250:322])
-        characters.append(equation[:,315:384])
+        characters.append(equation[:,60:130])   #e[1]
+        characters.append(equation[:,250:322])  #e[4]
+        characters.append(equation[:,315:384])  #e[5]
         evaluated = []
         for char in characters:
             img = cv2.resize(char, (64,64))

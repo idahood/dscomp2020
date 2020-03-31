@@ -22,10 +22,8 @@ def main():
     label_data = np.load('./data/train/Competition_Train_label_8000.npy')
     x_train, x_test, y_train, y_test = train_test_split(train_data, label_data, test_size=args.split)
 
-    img_rows = 64
-    img_cols = 64
-
-    # Hyperparamaters
+    img_rows = train_data.shape[1] #64
+    img_cols = train_data.shape[2] #64
     num_classes = 16
     batch_size = args.batch
     epochs = args.epoch
@@ -42,8 +40,6 @@ def main():
     '''
     And we're stealing from https://keras.io/examples/mnist_cnn/
     '''
-    x_train = x_train.astype('float32')
-    x_train /= 255
     print('x_train shape:', x_train.shape)
     print(x_train.shape[0], 'train samples')
 
@@ -69,23 +65,38 @@ def main():
     model = Sequential()
     model.add(Conv2D(32, kernel_size=(7, 7),
                      activation='relu',
+                     padding='Same',
                      input_shape=input_shape))
     model.add(Conv2D(64, (7, 7), activation='relu'))
-    model.add(MaxPooling2D(pool_size=(6, 6)))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Dropout(0.25))
     model.add(Flatten())
     model.add(Dense(128, activation='relu'))
     model.add(Dropout(0.5))
     model.add(Dense(num_classes, activation='softmax'))
 
+    optimizer = keras.optimizers.RMSprop()
+
     model.compile(loss=keras.losses.categorical_crossentropy,
-                  optimizer=keras.optimizers.Adadelta(),
+                  optimizer=optimizer,
                   metrics=['accuracy'])
+
+    learning_rate_reduction = keras.callbacks.ReduceLROnPlateau(monitor='val_accuracy',
+                                                patience=3,
+                                                verbose=1,
+                                                factor=0.5,
+                                                min_lr=0.00001)
+
+    early_stop = keras.callbacks.EarlyStopping(monitor='accuracy',
+                                               patience=3,
+                                               verbose=1,
+                                               min_delta=0.0005)
 
     model.fit_generator(datagen.flow(x_train, y_train, batch_size=args.batch),
                         epochs=args.epoch,
                         steps_per_epoch=x_train.shape[0]//args.batch,
                         validation_data=(x_test, y_test),
+                        callbacks=[learning_rate_reduction, early_stop],
                         verbose=1)
 
     model.save(f'models/model-b{args.batch}-e{args.epoch}-s{args.split}-{datetime.datetime.now().strftime("%Y-%m-%d@%H:%M:%S")}')

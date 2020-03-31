@@ -17,5 +17,4 @@ Make sure you're using tensorflow2! If you see a bunch of warnings about various
 
 ## Improvement Ideas
 
-Augment training data with lateral shift deformation?
 Add class for empty?
