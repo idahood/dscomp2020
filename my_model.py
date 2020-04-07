@@ -14,9 +14,9 @@ import numpy as np
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--batch', type=int, default=128, help='The batch size (default=128)')
+    parser.add_argument('--batch', type=int, default=64, help='The batch size (default=64)')
     parser.add_argument('--epoch', type=int, default=128, help='Number of epochs to train (default=128)')
-    parser.add_argument('--split', type=int, default=0.15, help='Training validation split (default=0.15)')
+    parser.add_argument('--split', type=int, default=0.2, help='Training validation split (default=0.2)')
     args = parser.parse_args()
 
     train_data = np.load('./data/train/Competition_Train_data_8000.npy')
@@ -76,21 +76,59 @@ def main():
     datagen.fit(x_train)
 
     model = Sequential()
-    model.add(Conv2D(32, kernel_size=(7, 7),
-                     activation='relu',
-                     padding='Same',
-                     input_shape=input_shape))
+    model.add(Conv2D(32, (3, 3), activation='relu', padding='Same', input_shape=input_shape))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(BatchNormalization())
-    model.add(Conv2D(64, (7, 7), activation='relu'))
+    model.add(Conv2D(64, (3, 3), activation='relu', padding='Same'))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    model.add(BatchNormalization())
+    model.add(Conv2D(128, (3, 3), activation='relu', padding='Same'))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    model.add(BatchNormalization())
+    model.add(Conv2D(256, (3, 3), activation='relu', padding='Same'))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    model.add(BatchNormalization())
+    model.add(Conv2D(512, (3, 3), activation='relu', padding='Same'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(BatchNormalization())
     model.add(Dropout(0.25))
     model.add(Flatten())
+    model.add(Dense(512, activation='relu'))
+    model.add(BatchNormalization())
+    model.add(Dropout(0.5))
     model.add(Dense(1024, activation='relu'))
+    model.add(BatchNormalization())
+    model.add(Dropout(0.5))
+    model.add(Dense(2048, activation='relu'))
+    model.add(BatchNormalization())
+    model.add(Dropout(0.5))
+    model.add(Dense(4096, activation='relu'))
+    model.add(BatchNormalization())
+    model.add(Dropout(0.5))
+    model.add(Dense(4096, activation='relu'))
+    model.add(BatchNormalization())
+    model.add(Dropout(0.5))
+    model.add(Dense(4096, activation='relu'))
+    model.add(BatchNormalization())
+    model.add(Dropout(0.5))
+    model.add(Dense(2048, activation='relu'))
+    model.add(BatchNormalization())
+    model.add(Dropout(0.5))
+    model.add(Dense(1024, activation='relu'))
+    model.add(BatchNormalization())
+    model.add(Dropout(0.5))
+    model.add(Dense(512, activation='relu'))
+    model.add(BatchNormalization())
+    model.add(Dropout(0.5))
+    model.add(Dense(256, activation='relu'))
+    model.add(BatchNormalization())
+    model.add(Dropout(0.5))
+    model.add(Dense(128, activation='relu'))
     model.add(BatchNormalization())
     model.add(Dropout(0.5))
     model.add(Dense(num_classes, activation='softmax'))
 
+    #RMSprop, Adadelta, Nadam seem best
     optimizer = keras.optimizers.RMSprop()
 
     model.compile(loss=keras.losses.categorical_crossentropy,
@@ -103,14 +141,14 @@ def main():
                                                 factor=0.5,
                                                 min_lr=0.00001)
 
-    early_stop = keras.callbacks.EarlyStopping(monitor='accuracy',
+    early_stop = keras.callbacks.EarlyStopping(monitor='val_accuracy',
                                                patience=3,
                                                verbose=1,
                                                min_delta=0.0005)
 
     model.fit_generator(datagen.flow(x_train, y_train, batch_size=args.batch),
                         epochs=args.epoch,
-                        steps_per_epoch=x_train.shape[0]//args.batch,
+                        steps_per_epoch=(x_train.shape[0]//args.batch)*10,
                         validation_data=(x_test, y_test),
                         callbacks=[learning_rate_reduction, early_stop],
                         verbose=1)
