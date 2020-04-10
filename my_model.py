@@ -69,7 +69,7 @@ def main():
             rotation_range=10,  # randomly rotate images in the range (degrees, 0 to 180)
             zoom_range = 0.1, # Randomly zoom image
             width_shift_range=0.1,  # randomly shift images horizontally (fraction of total width)
-            height_shift_range=0.1,  # randomly shift images vertically (fraction of total height)
+            height_shift_range=0.0,  # randomly shift images vertically (fraction of total height)
             horizontal_flip=False,  # randomly flip images
             vertical_flip=False)  # randomly flip images
 
@@ -79,19 +79,23 @@ def main():
     model.add(Conv2D(32, (3, 3), activation='relu', padding='Same', input_shape=input_shape))
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(BatchNormalization())
+    model.add(Dropout(0.33))
     model.add(Conv2D(64, (3, 3), activation='relu', padding='Same'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(BatchNormalization())
+    model.add(Dropout(0.33))
     model.add(Conv2D(128, (3, 3), activation='relu', padding='Same'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(BatchNormalization())
+    model.add(Dropout(0.33))
     model.add(Conv2D(256, (3, 3), activation='relu', padding='Same'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(BatchNormalization())
+    model.add(Dropout(0.33))
     model.add(Conv2D(512, (3, 3), activation='relu', padding='Same'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(BatchNormalization())
-    model.add(Dropout(0.25))
+    model.add(Dropout(0.5))
     model.add(Flatten())
     model.add(Dense(512, activation='relu'))
     model.add(BatchNormalization())
@@ -126,9 +130,8 @@ def main():
     model.add(Dense(128, activation='relu'))
     model.add(BatchNormalization())
     model.add(Dropout(0.5))
-    model.add(Dense(num_classes, activation='softmax'))
 
-    #RMSprop, Adadelta, Nadam seem best
+    #RMSprop, Adadelta seem best
     optimizer = keras.optimizers.RMSprop()
 
     model.compile(loss=keras.losses.categorical_crossentropy,
